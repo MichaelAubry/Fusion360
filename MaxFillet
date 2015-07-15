@@ -1,0 +1,59 @@
+#Author - Michael Aubry 
+#Description- This is a script that creates the max possible fillet.
+    #Start by selecting a working fillet in the timeline. Then run the script.
+    #Alter the 'grow' and 'sigFig' variables to change the growth behavior.
+
+
+# References
+# Fillet API Samples
+# http://fusion360.autodesk.com/resources
+# Special thanks to Brian Ekins
+
+import adsk.core, adsk.fusion, traceback
+
+def run(context):
+    ui = None
+    try:
+        app = adsk.core.Application.get()
+        ui  = app.userInterface
+        
+        if ui.activeSelections.count != 1:
+            ui.messageBox('A fillet feature must be selected.')
+            return
+
+        fillet = ui.activeSelections.item(0).entity
+        if fillet.objectType != adsk.fusion.FilletFeature.classType():            
+            ui.messageBox('A fillet feature must be selected.')
+            return
+
+        if fillet.edgeSets.count != 1:
+            ui.messageBox('Only single constant radius fillets are supported.')
+            return
+            
+        edgeSet = fillet.edgeSets.item(0)
+        if edgeSet.objectType != adsk.fusion.ConstantRadiusFilletEdgeSet.classType():
+            ui.messageBox('Only single constant radius fillets are supported.')
+            return
+        
+        filletParam = edgeSet.radius
+        grow = 1                        # Value to grow by for 1st round (1 = 1 cm)
+        sigFig = 4                      # the number of significant figures to reduce to 
+                                        # "4" means 1.000 then 0.100 then 0.010 then 0.001
+        
+        oldValue = filletParam.value
+        
+        for i in range(sigFig):
+            while fillet.faces.count != 0:  #determines if fillet fails to compute
+                oldValue = filletParam.value               
+                filletParam.value = filletParam.value + grow #if the fillet is successful then grow
+                #ui.messageBox('Fillet')
+            #Code to test if the fillet works
+            else:
+                filletParam.value = oldValue # if the fillet isn't successfull then undo
+                grow = grow*.1 # and then reduce the magnitude of the growth variable by 0.1 
+                #ui.messageBox('ready for the next sig')   #Use this message box if you want to see each iteration
+            
+    
+    except:
+        if ui:
+            ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
