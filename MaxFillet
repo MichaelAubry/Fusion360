@@ -45,7 +45,7 @@ def run(context):
         oldValue = filletParam.value    #When the fillet fails, return to this value
         
         for i in range(sigFig):
-            while fillet.faces.count >= originalFilletFaces - 1:  #determines if fillet fails to compute
+            while fillet.faces.count == originalFilletFaces:  #determines if fillet fails to compute
                 oldValue = filletParam.value               
                 filletParam.value = filletParam.value + grow #if the fillet is successful then grow
                 #ui.messageBox('Fillet')
