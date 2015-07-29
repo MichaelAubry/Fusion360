@@ -40,10 +40,12 @@ def run(context):
         sigFig = 4                      # the number of significant figures to reduce to 
                                         # "4" means 1.000 then 0.100 then 0.010 then 0.001
         
-        oldValue = filletParam.value
+        originalFilletFaces = fillet.faces.count 
+        #original faces count to determine if fillet feature is healing faces (which will cause unexpected results)
+        oldValue = filletParam.value    #When the fillet fails, return to this value
         
         for i in range(sigFig):
-            while fillet.faces.count != 0:  #determines if fillet fails to compute
+            while fillet.faces.count >= originalFilletFaces - 2:  #determines if fillet fails to compute
                 oldValue = filletParam.value               
                 filletParam.value = filletParam.value + grow #if the fillet is successful then grow
                 #ui.messageBox('Fillet')
