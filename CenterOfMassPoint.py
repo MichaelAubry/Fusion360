@@ -1,5 +1,5 @@
 #Mike Aubry (w/ true credit going to Sebastian Morales and Brian Ekins)
-#Description - This Fusion 360 Script allows you to create a contruction point where the center of mass is for 
+#Description - This Fusion 360 Script allows you to create a construction point where the center of mass is for 
 # the top level component. This is especially useful for balancing applications.
 
 import adsk.core, adsk.fusion, adsk.cam, traceback
